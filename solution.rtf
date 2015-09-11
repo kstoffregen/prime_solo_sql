@@ -1,0 +1,77 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww16360\viewh8040\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 1. Which authors are represented in our store?\
+\
+	SELECT authors.first_name, authors.last_name FROM authors;\
+\
+2. Which authors are also distinguished authors?\
+\
+	SELECT authors.first_name, authors.last_name FROM authors\
+	JOIN distinguished_authors ON authors.last_name=distinguished_authors.last_name;\
+\
+3. Which authors are not distinguished authors?\
+\
+	SELECT authors.first_name, authors.last_name FROM authors\
+	LEFT JOIN distinguished_authors ON authors.last_name=distinguished_authors.last_name\
+	WHERE distinguished_authors.last_name IS NULL;\
+\
+4. How many authors are represented in our store?\
+\
+	SELECT COUNT(*) FROM authors;\
+\
+5. Who are the favorite authors of the employee with the first name of Michael?\
+\
+	SELECT authors_and_titles FROM favorite_authors \
+	INNER JOIN employees \
+	ON favorite_authors.employee_id=employees.id\
+	WHERE employees.first_name='Michael';\
+\
+6. What are the titles of all the books that are in stock today?\
+\
+	
+\f1\fs26 SELECT title FROM books \
+\pard\tx710\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 	JOIN editions ON books.id=editions.book_id\
+	JOIN daily_inventory ON editions.isbn=daily_inventory.isbn\
+	WHERE is_stocked='t';
+\f0\fs24 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+7. Insert one of your favorite books into the database. Hint: You\'92ll want to create data into at least 2 other tables to completely create this book.\
+\
+	
+\f1\fs26 INSERT INTO authors (id, last_name, first_name)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 		VALUES ('2222', 'Duckett', 'Jon\'92);\
+	INSERT INTO books (id, title, author_id, subject_id)\
+		VALUES ('41480', 'Javascript & jQuery', '2222', \'914\'92);\
+	INSERT INTO employees (id, last_name, first_name)\
+		VALUES ('202', 'Stoffregen', 'Kathryn\'92);\
+	INSERT INTO favorite_books (employee_id, books)\
+		VALUES ('202', '\{Javascript & jQuery\}');\
+	SELECT books FROM favorite_books JOIN employees \
+		ON favorite_books.employee_id=employees.id\
+		WHERE employees.last_name='Stoffregen';
+\f0\fs24 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+\cf0 \
+8. What authors have books that are not in stock?\
+\
+	SELECT first_name, last_name FROM authors \
+	JOIN books ON authors.id=books.author_id\
+	JOIN editions ON books.id=editions.book_id\
+	JOIN daily_inventory ON editions.isbn=daily_inventory.isbn\
+	WHERE is_stocked='f';\
+\
+9. What is the title of the book that has the most stock?\
+\
+	SELECT title FROM books \
+	JOIN editions ON books.id=editions.book_id\
+	JOIN stock ON editions.isbn=stock.isbn\
+	ORDER BY stock DESC\
+	LIMIT 1;\
+}
